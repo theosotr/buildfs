@@ -1,0 +1,13 @@
+opam-version: "1.2.2"
+version: "0.1dev"
+maintainer: "theosotr@aueb.gr"
+authors: ["Thodoris Sotiropoulos"]
+homepage: "https://github.com/theosotr/buildfs"
+bug-reports: "https://github.com/theosotr/buildfs/issues"
+dev-repo: "git+https://github.com/theosotr/buildfs.git"
+license: "GPL-3.0"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]

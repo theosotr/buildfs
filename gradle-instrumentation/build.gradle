@@ -1,0 +1,36 @@
+apply plugin: "com.gradle.plugin-publish"
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"                    
+    }
+  }
+
+  dependencies {
+      classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
+      classpath "com.gradle.publish:plugin-publish-plugin:0.10.0"
+  }
+}
+
+apply plugin: "kotlin"
+
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile localGroovy()
+  compile gradleApi()
+  compile "org.jetbrains.kotlin:kotlin-stdlib:1.3.50"
+}
+
+pluginBundle {
+  plugins {
+    FSRacerPlugin {
+      id = 'org.fsracer.gradle.fsracer-plugin'
+      displayName = 'Gradle Task Tree Plugin'
+    }
+  }
+}

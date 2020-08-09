@@ -1,0 +1,27 @@
+# example for ~/.sbuildrc.  (Also see /etc/sbuild/sbuild.conf.)  -*- Perl -*-
+#
+# Default settings are commented out.
+# Additional options found in /etc/sbuild/sbuild.conf may be
+# overridden here.
+
+
+$core_depends = [
+                  'build-essential:native',
+                  'fakeroot:native',
+                  'python3',
+                  'python3-pip',
+                  'strace',
+                  'bc'
+                ];
+
+$external_commands = {
+                        'post-build-commands' => [],
+                        'chroot-setup-commands' => [],
+                        'starting-build-commands' => [
+                            'run-buildfs %p {PROJECT} {STRACE} {ITERATIONS}'
+                            # '%SBUILD_SHELL'
+                        ],
+                      };
+
+# don't remove this, Perl needs it:
+1;

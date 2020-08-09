@@ -1,0 +1,78 @@
+#! /bin/bash
+
+basedir=/data
+path=$1
+project=$2
+with_strace=$3
+iterations=$4
+
+
+pip install requests beautifulsoup4
+
+mkdir -p $basedir/$project/mkcheck
+cd $path
+echo $(pwd) > $basedir/$project/$project.path
+
+debian/rules clean
+debian/rules build
+if [ ! -f Makefile ]; then
+  echo "Couln't find Makefile" > $basedir/$project/$project.warning
+fi
+
+make clean
+for i in {1..$iterations}; do
+  if [ $with_strace -eq 0 ]; then
+    echo "Building the Make project $project without BuildFS..."
+    echo "Depending on the build, it may take some time (even hours). Bear with us..."
+    start_time=$(date +%s.%N)
+    make
+    elapsed_time=$(echo "$(date +%s.%N) - $start_time" | bc)
+    # Compute the time spent on build.
+    printf "%.2f\n" $elapsed_time >> $basedir/$project/base-build.time
+  else
+    echo "Building Make project $project with mkcheck..."
+    echo "Depending on the build, it may take some time (even hours). Bear with us..."
+    echo "
+    filter_in:
+            - Makefile.*
+            - /usr/.*
+            - /etc/.*
+            - //.*
+            - /lib/.*
+            - /bin/.*
+            - /.*/debian/.*
+    " > filter.yaml
+    start_time=$(date +%s.%N)
+    fuzz_test --graph-path=foo.json build 2> /dev/null
+    if [ $? -ne 0 ]; then
+      return
+    fi
+    elapsed_time=$(echo "$(date +%s.%N) - $start_time" | bc)
+    printf "%.2f\n" $elapsed_time > $basedir/$project/mkcheck/$project.time
+
+    cp foo.json $basedir/$project/mkcheck/$project.json
+
+    echo "Fuzz testing..."
+    start_time=$(date +%s.%N)
+    fuzz_test --graph-path=foo.json \
+      --rule-path filter.yaml fuzz \
+      > $basedir/$project/mkcheck/$project.fuzz 2> /dev/null
+    if [ $? -ne 0 ]; then
+      exit 1
+    fi
+    elapsed_time=$(echo "$(date +%s.%N) - $start_time" | bc)
+    printf "%.2f\n" $elapsed_time >> $basedir/$project/mkcheck/$project.time
+
+    echo "Race testing..."
+    start_time=$(date +%s.%N)
+    fuzz_test --graph-path=foo.json \
+      --rule-path filter.yaml race \
+      > $basedir/$project/mkcheck/$project.race 2> /dev/null
+
+    if [ $? -ne 0 ]; then
+      exit 1
+    fi
+    elapsed_time=$(echo "$(date +%s.%N) - $start_time" | bc)
+    printf "%.2f\n" $elapsed_time >> $basedir/$project/mkcheck/$project.time
+  fi
+done

@@ -1,0 +1,22 @@
+(include_subdirs unqualified)
+(env
+ (profile
+   (ocamlopt_flags (:standard -p -w -27-32-52-33-34-37-39))
+     (flags (:standard -w -27-32-52-33-34-37-39)))
+  (dev
+    (flags (:standard -w -27-32-52-33-34-37-39)))
+   (release
+     (flags (:standard -w -27-32-52-33-34-37-39))))
+
+(library
+  (name buildfs)
+  (modules (:standard \ main))
+  (libraries core yojson ppx_jane ppx_let str fd-send-recv fpath)
+  (preprocess (pps ppx_jane)))
+
+(executable
+  (name main)
+  (public_name buildfs)
+  (modules main)
+  (libraries buildfs)
+  (preprocess (pps ppx_jane)))

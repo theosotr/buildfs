@@ -1,0 +1,8 @@
+#! /bin/sh
+
+target="$1"
+prereqs="$2"
+echo "##MAKE## Begin $(pwd):$target" 1>&2
+shift 2
+/bin/bash "$@"
+echo "##MAKE## End" 1>&2
