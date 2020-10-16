@@ -1,0 +1,3 @@
+[submodule "gradle-instrumentation/buildfs-gradle-plugin"]
+	path = gradle-instrumentation/buildfs-gradle-plugin
+	url = https://github.com/theosotr/buildfs-gradle-plugin
