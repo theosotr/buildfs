@@ -1,4 +1,4 @@
-# BuilFS
+# BuildFS
 
 `BuildFS` is a dynamic approach for detecting faults in parallel
 and incremental builds.
