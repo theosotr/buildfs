@@ -1,0 +1,10 @@
+#! /bin/bash
+
+
+if [ -f gradlew ]; then
+  ./gradlew --stop
+  ./gradlew "$@"
+else
+  gradle --stop
+  gradle "$@"
+fi
