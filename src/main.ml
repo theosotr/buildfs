@@ -61,7 +61,7 @@ let gradle_tool =
       flag "build-task" (optional string)
       ~doc:"Build task to execute"
     and build_dir =
-      flag "build-dir" (required string)
+      flag "build-dir" (optional_with_default (Sys.getcwd ()) string)
       ~doc:"Build directory"
     and mode =
       flag "mode" (required (Arg_type.create mode_of_string))
@@ -121,7 +121,7 @@ let make_tool =
     ~summary:"This is the sub-command for analyzing and detecting faults in Make scripts"
     [%map_open
     let build_dir =
-      flag "build-dir" (required string)
+      flag "build-dir" (optional_with_default (Sys.getcwd ()) string)
       ~doc:"Build directory"
     and build_db =
       flag "build-db" (optional string)
