@@ -35,7 +35,7 @@ let construct_command = function
     raise (Errors.Error (Errors.ToolError, (Some "Cannot create command")))
   | { build_task = Some build_task; _ } ->
     [|
-      "./gradlew";
+      "fsgradle-gradle";
       build_task;
       "--no-parallel";
     |]
