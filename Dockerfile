@@ -85,7 +85,8 @@ ENV ANDROID_HOME=/usr/lib/android-sdk
 # Set the appropriate permissions.
 RUN if [ "$GRADLE" = "yes"  ]; then sudo chown -R buildfs:buildfs ${ANDROID_SDK_ROOT}; fi
 
-COPY ./gradle-instrumentation ${HOME}/gradle-instrumentation
+COPY ./gradle-instrumentation/buildfs-gradle-plugin ${HOME}/gradle-instrumentation
+COPY ./gradle-instrumentation/fsgradle-gradle ${SCRIPTS_DIR}
 
 # Build Gradle plugin
 WORKDIR $HOME/gradle-instrumentation

@@ -93,14 +93,14 @@ function fetch_project()
 
 instrument_build_script()
 {
-  plugin="$PLUGIN_JAR_DIR/gradle-instrumentation.jar"
+  plugin="$PLUGIN_JAR_DIR/gradle-instrumentation-1.0.jar"
   if [ "$1" = "groovy" ]; then
     buildscript="buildscript { dependencies { classpath files('$plugin') } }\n"
-    applyplug="apply plugin: 'org.fsracer.gradle.fsracer-plugin'"
+    applyplug="apply plugin: 'org.buildfs.gradle.buildfs-plugin'"
     build_file="build.gradle"
   else
     buildscript="buildscript { dependencies { classpath(files(\"$plugin\")) } }\n"
-    applyplug="apply(plugin=\"org.fsracer.gradle.fsracer-plugin\")"
+    applyplug="apply(plugin=\"org.buildfs.gradle.buildfs-plugin\")"
     build_file="build.gradle.kts"
   fi
   # Heuristic: Search for file whose name is build.gradle.[kts]
