@@ -15,7 +15,7 @@ we formally define three different types of faults related to
 incremental and parallel builds that
 arise when a file access violates the specification of build.
 Our testing approach operates as follows.
-First, it monitors the execution of a build script,
+First, it monitors the execution of an instrumented build script,
 and models this execution in `BuildFS`.
 Our method then verifies the correctness of the build execution
 by ensuring that there is no file access that leads to
@@ -37,7 +37,7 @@ docker build -t buildfs --build-arg IMAGE_NAME=<base-image> .
 
 where `<base-image>` is the base Docker used to set up
 the environment. We have tested our Docker script
-on `ubuntu:18.04` base image.
+on `ubuntu:18.04` and `debian:stable` base images.
 
 ### Building from source
 
@@ -66,8 +66,63 @@ opam install -y ppx_jane core yojson dune fd-send-recv fpath
 Finally, build `BuildFS` by running
 
 ```bash
-dune build -p buildfs
-dune install
+make
+sudo make install
+```
+
+This will build the `buildfs` executable and install
+the scripts for instrumenting Make and Gradle builds
+into the `/usr/local/bin` path.
+
+## Use BuildFS as standalone tool
+
+Here, we describe how you can use `BuildFS`
+as a standalone tool (without employing a Docker image).
+Currently, `BuildFS` has support for two well-established
+and popular build systems (namely, GNU Make and Gradle).
+
+### Make Builds
+
+
+You have analyze and test your Make builds by simply running
+the following command
+from the directory where your `Makefile` is located.
+
+```
+buildfs make-build -mode online
+```
+
+The command above executes your build,
+and analyzes its execution.
+It reports any missing inputs or ordering violations,
+if your Make script is incorrect.
+
+### Gradle Builds
+
+
+For Gradle builds, first you need to put the following three lines
+of code inside your main `build.grade` file.
+
+```groovy
+plugins {
+  id "org.buildfs.gradle.buildfs-plugin" version "1.0" 
+}
+```
+
+The code above applies our
+[org.buildfs.gradle.buildfs-plugin](https://plugins.gradle.org/plugin/org.buildfs.gradle.buildfs-plugin) to your Gradle script
+in order to enable our instrumentation.
+The `buildfs` tool exploits this instrumentation
+during the execution of the build,
+to extract the specification of each Gradle task
+(as written by the developers).
+
+After modifying your Gradle script, analyze and test your Gradle script
+by simply running the following command from the directory
+where your `gradlew` file is stored.
+
+```
+buildfs gradle-build -mode online -build-task build
 ```
 
 ### Usage
@@ -135,16 +190,13 @@ This is the sub-command for analyzing and detecting faults in Make scripts
                           (alias: -?)
 ```
 
+## Getting Started with Docker Image
 
-
-## Getting Started
-
-
-Let's see how we run and analyze real-world builds using `BuildFS`.
-To do so, we will use the Docker image we created in the
-previous step so that we perform the build in a fresh environment.
+After seeing how we can use `BuildFS` as a standalone tool,
+it's time to see how we run and analyze real-world builds
+through our Docker image.
 Recall that this image contains all necessary dependencies for
-running the builds.
+running the builds and scripts for producing multiple report files.
 The image contains an entrypoint script that expects the following
 options:
 
@@ -333,3 +385,15 @@ and no dependency has been specified between these tasks.
 **NOTE**: In general,
 Gradle builds take longer as they involve the download of JAR
 dependencies and the setup of the Gradle Daemon.
+
+## Publications
+
+The tool is described in detail in the following paper.
+
+* Thodoris Sotiropoulos, Stefanos Chaliasos, Dimitris Mitropoulos, and Diomidis Spinellis. 2020.
+  [A Model for Detecting Faults in Build Specifications](https://doi.org/10.1145/3428212).
+  In Proceedings of the ACM on Programming Languages (OOPSLA '20), 2020, Virtual, USA,
+  30 pages. 
+  ([doi:10.1145/3428212](https://doi.org/10.1145/3428212))
+
+The research artifact associated with this tool can be found at https://github.com/theosotr/buildfs-eval.
