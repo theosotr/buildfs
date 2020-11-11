@@ -39,7 +39,7 @@ an environment for executing and analyzing build executions
 through `BuildFS`, run
 
 ```bash
-docker build -t buildfs --build-arg IMAGE_NAME=<base-image> .
+docker build -t buildfs --build-arg IMAGE_NAME=<base-image> --build-arg GRADLE=yes .
 ```
 
 where `<base-image>` is the base Docker used to set up
