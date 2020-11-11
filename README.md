@@ -25,6 +25,13 @@ Note that to uncover faults, our method only requires a single full build.
 
 ## Building
 
+Fetch the repo by running
+
+````
+git clone --recursive https://github.com/theosotr/buildfs
+````
+
+
 ### Build Docker Images
 
 To build a Docker image that contains
