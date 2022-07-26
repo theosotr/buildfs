@@ -77,9 +77,10 @@ make
 sudo make install
 ```
 
-This will build the `buildfs` executable and install
-the scripts for instrumenting Make and Gradle builds
-into the `/usr/local/bin` path.
+This will (1) build and install the `buildfs` executable
+inside your local `~/.opam/4.07.0/bin` directory,
+and (2) install the scripts for instrumenting Make and Gradle builds
+into your `/usr/local/bin` path.
 
 ## Use BuildFS as standalone tool
 
