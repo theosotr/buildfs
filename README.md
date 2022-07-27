@@ -59,14 +59,14 @@ Then, install OCaml compiler 4.07 by running
 
 ```bash
 opam init -y
-eval `opam config env`
-opam switch 4.07.0
+eval $(opam env)
+opam switch create 4.07.0
 ```
 
 Next, install some opam packages used by `BuildFS`
 
 ```bash
-eval `opam config env`
+eval $(opam env)
 opam install -y ppx_jane core yojson dune fd-send-recv fpath
 ```
 
